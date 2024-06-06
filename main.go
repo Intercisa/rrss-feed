@@ -7,6 +7,11 @@ import (
 	"github.com/mmcdole/gofeed"
 )
 
+const (
+	newInfix  = "new/"
+	rssSuffix = ".rss"
+)
+
 func fetchFeed(url string) (*gofeed.Feed, error) {
 	fp := gofeed.NewParser()
 	feed, err := fp.ParseURL(url)
@@ -19,13 +24,14 @@ func printFeed(items []*gofeed.Item) {
 
 func main() {
 	sortNew := flag.Bool("n", false, "sort by new")
+	feedInput := flag.String("f", "https://www.reddit.com/r/hungary/", "add the feed you want to see")
 	flag.Parse()
 
 	var rssURL string
 	if *sortNew {
-		rssURL = "https://www.reddit.com/r/hungary/new/.rss"
+		rssURL = *feedInput + newInfix + rssSuffix
 	} else {
-		rssURL = "https://www.reddit.com/r/hungary/.rss"
+		rssURL = *feedInput + rssSuffix
 	}
 
 	feed, _ := fetchFeed(rssURL)

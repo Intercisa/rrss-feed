@@ -75,7 +75,7 @@ func getLongestNameLen(inputs []*gofeed.Item) int {
 
 func Render(inputs []*gofeed.Item) {
 	columns := []table.Column{
-		{Title: "Title", Width: util.GetTermWidth() - 4},
+		{Title: "Reddit RSS Feed", Width: util.GetTermWidth() - 4},
 	}
 
 	var rows []table.Row
