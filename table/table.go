@@ -66,6 +66,10 @@ func getLongestNameLen(inputs []*gofeed.Item) int {
 			max = len(input.Title)
 		}
 	}
+	termWidth := util.GetTermWidth()
+	if max > termWidth {
+		return termWidth
+	}
 	return max
 }
 

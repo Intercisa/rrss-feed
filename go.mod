@@ -9,6 +9,7 @@ require (
 	github.com/charmbracelet/lipgloss v0.11.0
 	github.com/mmcdole/gofeed v1.3.0
 	github.com/savioxavier/termlink v1.3.0
+	golang.org/x/term v0.6.0
 )
 
 require (

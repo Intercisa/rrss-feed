@@ -9,6 +9,8 @@ import (
 	"path/filepath"
 	"runtime"
 	"strings"
+
+	"golang.org/x/term"
 )
 
 // OpenFileUtil defines the system utility to use to open files
@@ -101,4 +103,13 @@ func ClearTerminal() {
 	default:
 		fmt.Println("Unsupported platform!")
 	}
+}
+
+func GetTermWidth() int {
+	width, _, err := term.GetSize(int(os.Stdin.Fd()))
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error getting terminal size: %v\n", err)
+		return 150
+	}
+	return width
 }
