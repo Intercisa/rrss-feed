@@ -113,3 +113,20 @@ func GetTermWidth() int {
 	}
 	return width
 }
+
+func Turnicate(input string, limit int) string {
+	if len(input) < 1 {
+		return input
+	}
+
+	turnicated := ""
+
+	for i, c := range input {
+		turnicated += string(c)
+
+		if (i + 1) == limit {
+			break
+		}
+	}
+	return turnicated
+}

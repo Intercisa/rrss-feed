@@ -16,8 +16,8 @@ var baseStyle = lipgloss.NewStyle().
 	BorderForeground(lipgloss.Color("240"))
 
 type model struct {
-	table table.Model
 	items []*gofeed.Item
+	table table.Model
 }
 
 func (m model) Init() tea.Cmd { return nil }
@@ -75,7 +75,7 @@ func getLongestNameLen(inputs []*gofeed.Item) int {
 
 func Render(inputs []*gofeed.Item) {
 	columns := []table.Column{
-		{Title: "Title", Width: getLongestNameLen(inputs)},
+		{Title: "Title", Width: util.GetTermWidth() - 4},
 	}
 
 	var rows []table.Row
