@@ -4,6 +4,9 @@ import (
 	"fmt"
 	"os"
 
+	"bsipiczki.com/rss-feed/list"
+	common "bsipiczki.com/rss-feed/model"
+	"bsipiczki.com/rss-feed/scrap"
 	"bsipiczki.com/rss-feed/util"
 	"github.com/charmbracelet/bubbles/table"
 	tea "github.com/charmbracelet/bubbletea"
@@ -15,9 +18,15 @@ var baseStyle = lipgloss.NewStyle().
 	BorderStyle(lipgloss.DoubleBorder()).
 	BorderForeground(lipgloss.Color("240"))
 
+type comment struct {
+	formatted []common.FormattedComments
+}
+
 type model struct {
-	items []*gofeed.Item
-	table table.Model
+	items         []*gofeed.Item
+	comment       []comment
+	table         table.Model
+	showAltScreen bool
 }
 
 func (m model) Init() tea.Cmd { return nil }
@@ -34,6 +43,8 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			return m, tea.Sequence(
 				openLinkCmd(m.items[idx].Link),
 			)
+		case "c":
+			list.Render(m.comment[m.table.Cursor()].formatted)
 		}
 	}
 	m.table, cmd = m.table.Update(msg)
@@ -105,9 +116,34 @@ func Render(inputs []*gofeed.Item) {
 		Bold(false)
 	t.SetStyles(s)
 
-	m := model{table: t, items: inputs}
+	comment := getComments(inputs)
+	m := model{
+		table:   t,
+		items:   inputs,
+		comment: comment,
+	}
 	if _, err := tea.NewProgram(m).Run(); err != nil {
 		fmt.Println("Error running program:", err)
 		os.Exit(1)
 	}
+}
+
+func getComments(inputs []*gofeed.Item) []comment {
+	var comments []comment
+	for _, input := range inputs {
+		fl := util.TransformToOldReddit(input.Link)
+		cs := scrap.Scrap(fl)
+		fc := getFormattedComments(cs)
+		comments = append(comments, comment{fc})
+	}
+	return comments
+}
+
+func getFormattedComments(comments []scrap.Comment) []common.FormattedComments {
+	var formatted []common.FormattedComments
+	for _, comment := range comments {
+		fc := common.FormattedComments{Author: comment.Author, Content: comment.Content}
+		formatted = append(formatted, fc)
+	}
+	return formatted
 }

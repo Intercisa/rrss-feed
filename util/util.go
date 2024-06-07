@@ -130,3 +130,8 @@ func Turnicate(input string, limit int) string {
 	}
 	return turnicated
 }
+
+func TransformToOldReddit(url string) string {
+	replacer := strings.NewReplacer("www", "old")
+	return replacer.Replace(url)
+}
