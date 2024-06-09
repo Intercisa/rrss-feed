@@ -122,6 +122,9 @@ func Render(inputs []*gofeed.Item) {
 		items:   inputs,
 		comment: comment,
 	}
+
+	util.ClearTerminal()
+
 	if _, err := tea.NewProgram(m).Run(); err != nil {
 		fmt.Println("Error running program:", err)
 		os.Exit(1)
