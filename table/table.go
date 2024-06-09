@@ -3,6 +3,7 @@ package table
 import (
 	"fmt"
 	"os"
+	"strconv"
 
 	"bsipiczki.com/rss-feed/list"
 	common "bsipiczki.com/rss-feed/model"
@@ -86,13 +87,15 @@ func getLongestNameLen(inputs []*gofeed.Item) int {
 
 func Render(inputs []*gofeed.Item) {
 	columns := []table.Column{
-		{Title: "Reddit RSS Feed", Width: util.GetTermWidth() - 4},
+		{Title: "Reddit RSS Feed", Width: util.GetTermWidth() - 14},
+		{Title: "Comments", Width: 10},
 	}
 
 	var rows []table.Row
+	comment := getComments(inputs)
 
-	for _, input := range inputs {
-		rows = append(rows, table.Row{input.Title})
+	for i, input := range inputs {
+		rows = append(rows, table.Row{input.Title, strconv.Itoa(len(comment[i].formatted))})
 	}
 
 	t := table.New(
@@ -116,7 +119,6 @@ func Render(inputs []*gofeed.Item) {
 		Bold(false)
 	t.SetStyles(s)
 
-	comment := getComments(inputs)
 	m := model{
 		table:   t,
 		items:   inputs,
